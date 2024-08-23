@@ -7,11 +7,14 @@ import {Switch} from '../switch'
 function Toggle({children}) {
   const [on, setOn] = React.useState(false)
   const toggle = () => setOn(!on)
-  // console.log({children, on, toggle})
 
   return React.Children.map(children, child => {
     console.log({children, child})
-    return React.cloneElement(child, {on, toggle})
+    if (typeof child.type === 'string') {
+      return child
+    } else {
+      return React.cloneElement(child, {on, toggle})
+    }
   })
 }
 
@@ -29,6 +32,7 @@ function App() {
       <Toggle>
         <ToggleOn>The button is on</ToggleOn>
         <ToggleOff>The button is off</ToggleOff>
+        <span>Hello</span>
         <ToggleButton />
       </Toggle>
     </div>
