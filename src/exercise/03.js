@@ -10,6 +10,8 @@ function Toggle({children}) {
   const [on, setOn] = useState(false)
   const toggle = () => setOn(!on)
 
+  console.log({children})
+
   return (
     <ToggleContext.Provider value={{on, toggle}}>
       {children}
@@ -18,7 +20,12 @@ function Toggle({children}) {
 }
 
 const useToggle = () => {
-  return useContext(ToggleContext)
+  const context = useContext(ToggleContext)
+  if (context === undefined)
+    throw new Error(
+      'Component must be in Toggle Component to have access to ToggleContext',
+    )
+  else return context
 }
 
 function ToggleOn({children}) {
