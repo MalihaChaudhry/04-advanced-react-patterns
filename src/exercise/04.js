@@ -4,6 +4,13 @@
 import {useState} from 'react'
 import {Switch} from '../switch'
 
+function callAll(...fns) {
+  return (...args) =>
+    fns.forEach(fn => {
+      return fn && fn(...args)
+    })
+}
+
 function useToggle() {
   const [on, setOn] = useState(false)
   const toggle = () => setOn(!on)
