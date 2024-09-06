@@ -3,6 +3,7 @@
 
 import * as React from 'react'
 import {Switch} from '../switch'
+import warning from 'warning'
 
 const callAll =
   (...fns) =>
@@ -33,6 +34,7 @@ function useToggle({
   reducer = toggleReducer,
   onChange,
   on: controlledOn,
+  readOnly = false,
 } = {}) {
   const {current: initialState} = React.useRef({on: initialOn})
   const [state, dispatch] = React.useReducer(reducer, initialState)
@@ -63,6 +65,14 @@ function useToggle({
   // 💰 Also note that users don't *have* to pass an `onChange` prop (it's not required)
   // so keep that in mind when you call it! How could you avoid calling it if it's not passed?
   const on = onIsControlled ? controlledOn : state.on
+
+  const includesOnChange = Boolean(onChange)
+  React.useEffect(() => {
+    warning(
+      !(!includesOnChange && onIsControlled && !readOnly),
+      'You cannot pass onChange without also passing an on variable.',
+    )
+  }, [includesOnChange, onIsControlled, readOnly])
 
   const dispatchWithOnChange = action => {
     if (!onIsControlled) {
@@ -99,12 +109,13 @@ function useToggle({
   }
 }
 
-function Toggle({on: controlledOn, onChange, initialOn, reducer}) {
+function Toggle({on: controlledOn, onChange, initialOn, reducer, readOnly}) {
   const {on, getTogglerProps} = useToggle({
     on: controlledOn,
     onChange,
     initialOn,
     reducer,
+    readOnly,
   })
 
   const props = getTogglerProps({on})
