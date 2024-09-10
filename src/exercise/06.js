@@ -29,6 +29,10 @@ function toggleReducer(state, {type, initialState}) {
   }
 }
 
+function useWarning() {
+  console.log("you're inside the useWarning hook!! yay!")
+}
+
 function useToggle({
   initialOn = false,
   reducer = toggleReducer,
