@@ -29,8 +29,19 @@ function toggleReducer(state, {type, initialState}) {
   }
 }
 
-function useWarning() {
-  console.log("you're inside the useWarning hook!! yay!")
+function useWarning(controlPropValue) {
+  const isControlled = controlPropValue != null
+  const {current: wasControlled} = React.useRef(isControlled)
+  React.useEffect(() => {
+    warning(
+      !(isControlled && !wasControlled),
+      'You are changing from a uncontrolled to controlled component.',
+    )
+    warning(
+      !(!isControlled && wasControlled),
+      'You are changing from a controlled to uncontrolled component.',
+    )
+  }, [isControlled, wasControlled])
 }
 
 function useToggle({
@@ -43,7 +54,7 @@ function useToggle({
   const {current: initialState} = React.useRef({on: initialOn})
   const [state, dispatch] = React.useReducer(reducer, initialState)
 
-  const onIsControlled = controlledOn != null
+  const onIsControlled = controlledOn != null && controlledOn !== undefined
 
   console.log({
     from: 'useToggle',
@@ -69,6 +80,8 @@ function useToggle({
   // 💰 Also note that users don't *have* to pass an `onChange` prop (it's not required)
   // so keep that in mind when you call it! How could you avoid calling it if it's not passed?
   const on = onIsControlled ? controlledOn : state.on
+
+  useWarning(controlledOn)
 
   const includesOnChange = Boolean(onChange)
   React.useEffect(() => {
