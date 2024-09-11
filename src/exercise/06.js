@@ -91,8 +91,12 @@ function useToggle({
   // so keep that in mind when you call it! How could you avoid calling it if it's not passed?
   const on = onIsControlled ? controlledOn : state.on
 
-  useControlledSwitchWarning(controlledOn)
-  useOnChangeReadOnlyWarning(controlledOn, Boolean(onChange), readOnly)
+  if (process.env.NODE_ENV === 'production') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useControlledSwitchWarning(controlledOn)
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useOnChangeReadOnlyWarning(controlledOn, Boolean(onChange), readOnly)
+  }
 
   const dispatchWithOnChange = action => {
     if (!onIsControlled) {
