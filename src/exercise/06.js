@@ -65,7 +65,7 @@ function useToggle({
   //
   // 💰 Sorry if Olivia the Owl is cryptic. Here's what you need to do for that onChange call:
   // `onChange(reducer({...state, on}, action), action)`
-  // 💰 Also note that user's don't *have* to pass an `onChange` prop (it's not required)
+  // 💰 Also note that users don't *have* to pass an `onChange` prop (it's not required)
   // so keep that in mind when you call it! How could you avoid calling it if it's not passed?
 
   // make these call `dispatchWithOnChange` instead
