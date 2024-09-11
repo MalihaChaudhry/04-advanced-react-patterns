@@ -29,7 +29,17 @@ function toggleReducer(state, {type, initialState}) {
   }
 }
 
-function useWarning(controlPropValue) {
+function useOnChangeReadOnlyWarning(controlPropValue, hasOnChange, readOnly) {
+  const isControlled = controlPropValue != null
+  React.useEffect(() => {
+    warning(
+      !(!hasOnChange && isControlled && !readOnly),
+      'You cannot pass onChange without also passing an on variable.',
+    )
+  }, [hasOnChange, isControlled, readOnly])
+}
+
+function useControlledSwitchWarning(controlPropValue) {
   const isControlled = controlPropValue != null
   const {current: wasControlled} = React.useRef(isControlled)
   React.useEffect(() => {
@@ -81,15 +91,8 @@ function useToggle({
   // so keep that in mind when you call it! How could you avoid calling it if it's not passed?
   const on = onIsControlled ? controlledOn : state.on
 
-  useWarning(controlledOn)
-
-  const includesOnChange = Boolean(onChange)
-  React.useEffect(() => {
-    warning(
-      !(!includesOnChange && onIsControlled && !readOnly),
-      'You cannot pass onChange without also passing an on variable.',
-    )
-  }, [includesOnChange, onIsControlled, readOnly])
+  useControlledSwitchWarning(controlledOn)
+  useOnChangeReadOnlyWarning(controlledOn, Boolean(onChange), readOnly)
 
   const dispatchWithOnChange = action => {
     if (!onIsControlled) {
